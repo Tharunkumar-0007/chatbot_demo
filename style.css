@@ -1,6 +1,6 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #e5ddd5;
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f4f8; /* Light blue background */
     margin: 0;
     padding: 0;
     display: flex;
@@ -9,122 +9,126 @@ body {
 }
 
 .header, .footer {
-    background-color: #0c2b40;
+    background-color: #003366; /* Dark blue */
     color: white;
     text-align: center;
-    padding: 10px;
+    padding: 12px 20px; /* Adjusted padding for balance */
     background-image: url('path/to/background-image.jpg'); /* Add your background image */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
 }
-
 
 .chat-container {
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 15px; /* Reduced padding for compact layout */
 }
 
 .chat-box {
     display: flex;
     flex-direction: column;
-    width: 70%; /* Adjust to 70% of the screen width */
-    height: calc(100vh - 120px); /* Adjust to fill the space between header and footer */
-    max-width: 1200px; /* Optional: maximum width for large screens */
-    max-height: calc(100vh - 120px); /* Optional: maximum height for large screens */
-    margin: 20px auto; /* Center horizontally */
+    width: 90%; /* Wider chat box for better usage of space */
+    max-width: 1000px; /* Adjusted maximum width for better fit */
+    height: calc(100vh - 140px); /* Adjusted height for improved space usage */
+    max-height: calc(100vh - 140px); /* Maximum height for large screens */
+    margin: 0 auto; /* Center horizontally */
     background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #d0dbe1; /* Light gray border for contrast */
+    border-radius: 10px; /* Slightly rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* More prominent shadow */
     overflow: hidden;
 }
 
 .chat-box-header {
-    background-color: #0c2b40;
+    background-color: #004080; /* Medium blue */
     color: white;
-    padding: 15px;
+    padding: 12px; /* Adjusted padding for better space management */
     text-align: left;
     display: flex;
-    align-items: center; /* Vertically center items */
-    gap: 10px; 
+    align-items: center;
+    gap: 12px; /* Adjusted gap for balanced spacing */
+    border-bottom: 1px solid #d0dbe1; /* Add a bottom border */
 }
 
 .user-avatar {
-    width: 50px;
+    width: 50px; /* Slightly smaller avatar */
     height: 50px;
     border-radius: 50%;
-    margin-right: 10px;
-    border: 4px solid white; /* Creates a round white border */
+    margin-right: 12px;
+    border: 3px solid white; /* Adjusted border size */
     object-fit: cover;
 }
 
-h2{
-    margin:0;
+h2 {
+    margin: 0;
+    font-size: 1.4rem; /* Adjusted font size for better proportion */
 }
 
 .chat-messages {
     flex: 1;
-    padding: 15px;
+    padding: 15px; /* Reduced padding for more compact messages area */
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px; /* Reduced gap for better space utilization */
 }
 
 .message {
-    max-width: 75%;
-    padding: 10px;
-    border-radius: 8px;
+    max-width: 85%; /* Wider messages for improved readability */
+    padding: 10px; /* Adjusted padding for balance */
+    border-radius: 8px; /* Rounded corners */
     word-wrap: break-word;
 }
 
-.user-message  {
+.user-message {
     align-self: flex-end;
-    background: #0d2531;
+    background: #0066cc; /* Blue for user messages */
     color: #fff;
+    border: 1px solid #005bb5; /* Darker blue border */
 }
 
 .bot-message {
     align-self: flex-start;
-    background: #fff;
+    background: #e6f0ff; /* Light blue for bot messages */
     color: #333;
-    border: 1px solid #ddd;
+    border: 1px solid #cce0ff; /* Lighter blue border */
 }
 
 .chat-input {
     display: flex;
-    border-top: 1px solid #ddd;
-    padding: 25px;
-}
-.chat-message strong {
-    color: #004d99;
-    
+    border-top: 1px solid #d0dbe1;
+    padding: 12px; /* Adjusted padding for balance */
+    background: #f7faff; /* Light blue background */
 }
 
 input[type="text"] {
     flex: 1;
-    padding: 10px;
-    border: none;
-    border-bottom-left-radius: 8px;
+    padding: 10px; /* Adjusted padding for balance */
+    border: 1px solid #d0dbe1;
+    border-radius: 8px;
     outline: none;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); /* Subtle inner shadow */
+    margin:2px;
 }
 
 button {
-    padding: 12px 30px;
-    background-color: #0c2b40;
-    color: white;   
+    padding: 10px 20px; /* Adjusted padding for a balanced look */
+    background-color: #003366; /* Dark blue */
+    color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth transition */
 }
 
 button:hover {
-    background-color: #c0c7cb;
+    background-color: #002244; /* Even darker blue on hover */
 }
 
-#voice-input{
-    margin-right: 10px;
+#voice-input {
+    margin-right: 12px; /* Adjust margin for spacing */
 }
