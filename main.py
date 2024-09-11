@@ -1,8 +1,10 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import re
 import torch
+import logging
+from logging.handlers import RotatingFileHandler
 from langchain.prompts import PromptTemplate
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
@@ -16,6 +18,15 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 CORS(app)  # Enable CORS for all routes
 
+# Configure logging
+log_formatter = logging.Formatter('%(asctime)s - %(message)s')
+
+file_handler = RotatingFileHandler('chatbot.log', maxBytes=1000000, backupCount=3)
+file_handler.setFormatter(log_formatter)
+
+app.logger.addHandler(file_handler)
+app.logger.setLevel(logging.INFO)
+
 # Define the User model matching the database table structure
 class User(db.Model):
     __tablename__ = 'register'  # Specify the table name
@@ -26,6 +37,7 @@ class User(db.Model):
 
 # Global variables for the QA chain and other components
 qa_chain = None
+question_count = 0  # Counter for the number of questions asked
 
 # Simplified prompt template for faster generation
 custom_prompt_template = """Answer the following question using the given context.
@@ -41,7 +53,6 @@ def set_custom_prompt():
 
 def load_llm():
     """Load the language model."""
-    # Adjusted max_new_tokens for faster generation
     llm = CTransformers(
         model="TheBloke/llama-2-7b-chat-GGML",
         model_type="llama",
@@ -73,7 +84,7 @@ def initialize_qa_bot():
     try:
         db = FAISS.load_local("vectorstores/db_faiss", embeddings, allow_dangerous_deserialization=True)
     except Exception as e:
-        print(f"Error loading FAISS database: {e}")
+        app.logger.error(f"Error loading FAISS database: {e}")
         return None
     llm = load_llm()
     qa_prompt = set_custom_prompt()
@@ -82,7 +93,7 @@ def initialize_qa_bot():
 # Route to handle form submission for registration via AJAX
 @app.route('/')
 def home():
-    return render_template('user.html')  # Ensure index.html exists in the 'templates' folder
+    return render_template('user.html')  # Ensure user.html exists in the 'templates' folder
 
 @app.route('/register', methods=['POST'])
 def register_user():
@@ -92,24 +103,24 @@ def register_user():
     password = data.get('password')
     retype_password = data.get('retype_password')
     
-    # Check if all required fields are filled
     if not uname or not email or not password or not retype_password:
+        app.logger.info(f'User registration attempt failed: {uname} - All fields are required.')
         return jsonify({'error': 'Please fill in all fields!'}), 400
     
-    # Check if passwords match
     if password != retype_password:
+        app.logger.info(f'User registration attempt failed: {uname} - Passwords do not match.')
         return jsonify({'error': 'Passwords do not match!'}), 400
 
-    # Check if email already exists
     existing_user = User.query.filter_by(email=email).first()
     if existing_user:
+        app.logger.info(f'User registration attempt failed: {uname} - Email already registered.')
         return jsonify({'error': 'Email already registered!'}), 400
     
-    # Add new user to the database
     new_user = User(uname=uname, email=email, password=password, retype_password=retype_password)
     db.session.add(new_user)
     db.session.commit()
     
+    app.logger.info(f'User registered successfully: {uname}')
     return jsonify({'message': 'Registration successful!'}), 200
 
 # Route to handle login
@@ -119,30 +130,46 @@ def login_user():
     uname = data.get('uname')
     password = data.get('password')
     
-    # Check if the username and password match the database record
     user = User.query.filter_by(uname=uname, password=password).first()
     
     if user:
-        # Successful login
+        app.logger.info(f'User logged in successfully: {uname}')
         return jsonify({'message': 'Login successful!'}), 200
     else:
-        # Login failed
+        app.logger.info(f'Login attempt failed: {uname} - Invalid username or password.')
         return jsonify({'error': 'Invalid username or password!'}), 400
 
 @app.route('/ask', methods=['POST'])
 def ask_question():
+    global question_count
     user_input = request.form['query']
+    uname = request.form.get('uname')  # Using 'uname' instead of 'username'
+    
     if not is_valid_query(user_input):
+        if uname:
+            app.logger.info(f'Question asked by {uname}: {user_input}')
         return jsonify({"response": "Nothing matched. Please enter a valid query."})
+    
     if qa_chain is None:
+        if uname:
+            app.logger.info(f'Question asked by {uname}: {user_input}')
         return jsonify({"response": "Failed to initialize QA bot."})
+    
     try:
-        # Use 'query' instead of 'context' for a shorter and faster response
         res = qa_chain({'query': user_input})
         answer = res.get("result", "No answer found.")
+        question_count += 1
+        # Log question count along with uname
+        if uname:
+            app.logger.info(f'Question count by {uname}: {question_count} | Question asked by {uname}: {user_input}')
+        else:
+            app.logger.info(f'Question count by {uname}: {question_count}')
         return jsonify({"response": answer})
     except Exception as e:
+        if uname:
+            app.logger.error(f'Error processing the query by {uname}: "{user_input}" - Error: {e}')
         return jsonify({"response": f"Error processing the query: {e}"})
+
 
 def is_valid_query(query):
     """Check if the query is valid."""
@@ -151,6 +178,12 @@ def is_valid_query(query):
     if not re.search(r'[a-zA-Z0-9]', query):
         return False
     return True
+
+# Test route to check logging
+@app.route('/test-logging')
+def test_logging():
+    app.logger.info("This is a test log entry.")
+    return "Logging test complete."
 
 if __name__ == '__main__':
     initialize_qa_bot()  # Initialize the QA bot when the app starts

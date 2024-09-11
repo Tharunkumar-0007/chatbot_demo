@@ -33,6 +33,7 @@
 
     <footer class="footer">
         <p>&copy; Powered by Holoware</p>
+        <p>*You can also refer to Doctor because this response is inaccurate.</p>
     </footer>
 
     <!-- Include the script -->
@@ -49,9 +50,9 @@
             fetch('http://127.0.0.1:5000/ask', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',  // Adjust content type for form data
+                    'Content-Type': 'application/json',  // Adjust content type for JSON data
                 },
-                body: new URLSearchParams({
+                body: JSON.stringify({
                     'query': userInput  // Send user input as 'query'
                 }),
             })
@@ -63,7 +64,7 @@
             })
             .then(data => {
                 // Append the chatbot's response to the chat
-                appendMessage('Medical Bot', data.response);
+                appendMessage(data.username, data.response);
                 document.getElementById('query').value = '';  // Clear the input field
             })
             .catch(error => {
@@ -75,18 +76,15 @@
         function appendMessage(sender, message) {
             const chatMessages = document.getElementById('chat-messages');
             
-            // Only append messages from the bot
-            if (sender === 'Medical Bot') {
-                const messageDiv = document.createElement('div');
-                messageDiv.classList.add('chat-message');
-                messageDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
-                chatMessages.appendChild(messageDiv);
-        
-                // Scroll to the bottom to show the latest message
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
+            // Append messages to the chat
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('chat-message');
+            messageDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
+            chatMessages.appendChild(messageDiv);
+    
+            // Scroll to the bottom to show the latest message
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
-        
     </script>
 </body>
 </html>
