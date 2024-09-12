@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import re
@@ -20,22 +20,24 @@ CORS(app)  # Enable CORS for all routes
 
 # Configure logging
 log_formatter = logging.Formatter('%(asctime)s - %(message)s')
+
 file_handler = RotatingFileHandler('chatbot.log', maxBytes=1000000, backupCount=3)
 file_handler.setFormatter(log_formatter)
+
 app.logger.addHandler(file_handler)
 app.logger.setLevel(logging.INFO)
 
 # Define the User model matching the database table structure
 class User(db.Model):
-    __tablename__ = 'register'
-    uname = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(100), primary_key=True)
-    password = db.Column(db.String(100), nullable=False)
-    retype_password = db.Column(db.String(100), nullable=False)
+    __tablename__ = 'register'  # Specify the table name
+    uname = db.Column(db.String(100), nullable=False)  # Username field
+    email = db.Column(db.String(100), primary_key=True)  # Email field is the primary key
+    password = db.Column(db.String(100), nullable=False)  # Password field
+    retype_password = db.Column(db.String(100), nullable=False)  # Retype password field
 
 # Global variables for the QA chain and other components
 qa_chain = None
-question_count = 0
+question_count = 0  # Counter for the number of questions asked
 
 # Simplified prompt template for faster generation
 custom_prompt_template = """Answer the following question using the given context.
@@ -54,22 +56,33 @@ def load_llm():
     llm = CTransformers(
         model="TheBloke/llama-2-7b-chat-GGML",
         model_type="llama",
-        max_new_tokens=256,
-        temperature=0.9,
+        max_new_tokens=128,  # Reduced tokens to speed up response
+        temperature=0.7,  # Lower temperature for faster, more deterministic results
         n_gpu_layers=8,
-        n_threads=24,
-        n_batch=1000
+        n_threads=24,  # Utilize all 24 logical processors
+        n_batch=1000,
+        load_in_8bit=True, 
+        num_beams=1,
+        max_length=256,
+        clean_up_tokenization_spaces=False 
     )
     return llm
+
+from flask_caching import Cache
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+
+@cache.cached(timeout=300, key_prefix='faq_cache')
+def get_faq_response(question):
+    return qa_chain({'query': question})
 
 def retrieval_qa_chain(llm, prompt, db):
     """Create a RetrievalQA chain."""
     qa_chain = RetrievalQA.from_chain_type(
         llm=llm,
         chain_type="stuff",
-        retriever=db.as_retriever(search_kwargs={"k": 1}),
+        retriever=db.as_retriever(search_kwargs={"k": 1}),  # Reduce the number of documents retrieved to 1
         chain_type_kwargs={"prompt": prompt},
-        return_source_documents=False
+        return_source_documents=False  # Do not return source docs to reduce overhead
     )
     return qa_chain
 
@@ -131,7 +144,6 @@ def login_user():
     user = User.query.filter_by(uname=uname, password=password).first()
     
     if user:
-        session['username'] = uname  # Store username in session
         app.logger.info(f'User logged in successfully: {uname}')
         return jsonify({'message': 'Login successful!'}), 200
     else:
@@ -141,9 +153,8 @@ def login_user():
 @app.route('/ask', methods=['POST'])
 def ask_question():
     global question_count
-    data = request.get_json()  # Use get_json() to parse JSON request data
-    user_input = data.get('query')
-    username = session.get('username', 'Unknown')  # Retrieve username from session, default to 'Unknown'
+    user_input = request.form['query']
+    username = request.form.get('username')  # Assuming you pass the username in the form data
     
     if not is_valid_query(user_input):
         if username:
@@ -153,25 +164,12 @@ def ask_question():
     if qa_chain is None:
         if username:
             app.logger.info(f'Question asked by {username}: {user_input}')
-
-#     uname = request.form.get('uname')  # Using 'uname' instead of 'username'
-    
-#     if not is_valid_query(user_input):
-#         if uname:
-#             app.logger.info(f'Question asked by {uname}: {user_input}')
-#         return jsonify({"response": "Nothing matched. Please enter a valid query."})
-    
-#     if qa_chain is None:
-#         if uname:
-#             app.logger.info(f'Question asked by {uname}: {user_input}')
-# >>>>>>> 7e75131926b3cb049f308b103b5405d2f29eeb8b
         return jsonify({"response": "Failed to initialize QA bot."})
     
     try:
         res = qa_chain({'query': user_input})
         answer = res.get("result", "No answer found.")
         question_count += 1
-
         app.logger.info(f'Question count: {question_count}')
         if username:
             app.logger.info(f'Question asked by {username}: {user_input}')
@@ -179,19 +177,7 @@ def ask_question():
     except Exception as e:
         if username:
             app.logger.error(f'Error processing the query by {username}: "{user_input}" - Error: {e}')
-
-#         # Log question count along with uname
-#         if uname:
-#             app.logger.info(f'Question count by {uname}: {question_count} | Question asked by {uname}: {user_input}')
-#         else:
-#             app.logger.info(f'Question count by {uname}: {question_count}')
-#         return jsonify({"response": answer})
-#     except Exception as e:
-#         if uname:
-#             app.logger.error(f'Error processing the query by {uname}: "{user_input}" - Error: {e}')
-# >>>>>>> 7e75131926b3cb049f308b103b5405d2f29eeb8b
         return jsonify({"response": f"Error processing the query: {e}"})
-
 
 def is_valid_query(query):
     """Check if the query is valid."""

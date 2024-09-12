@@ -15,6 +15,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     recognition.onresult = (event) => {
         queryInput.value = event.results[0][0].transcript;
+
+        // Automatically click the send button after 2 seconds
+        setTimeout(() => {
+            queryForm.dispatchEvent(new Event('submit'));
+        }, 2000);
     };
 
     // Handle form submission (text and voice input)

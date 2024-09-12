@@ -15,7 +15,7 @@
     <header class="header">
         <img src="https://holoware.co/wp-content/uploads/2024/04/Blue-Logo-new.png" alt="Holoware Logo" height="80px">
         <h1>Holoware Medical Bot</h1>
-        <p>Click and get the output</p>
+        <p>The medical bot can assist in resolving your medical question</p>
     </header>
 
     <div class="chat-container">
@@ -44,10 +44,10 @@
         <p>&copy; Powered by Holoware</p>
         <p>*Due to the inaccuracy of this response, you can also consult the doctor.</p>
     </footer>
-
+    <script src="script.js"></script>
     <script>
         document.getElementById('query-form').addEventListener('submit', (event) => {
-            event.preventDefault(); // Prevent form from reloading the page
+            event.preventDefault();  // Prevent form from reloading the page
             const userInput = document.getElementById('query').value;
 
             // Append the user's message to the chat
@@ -57,32 +57,44 @@
             fetch('http://127.0.0.1:5000/ask', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded',  // Adjust content type for form data
                 },
-                body: JSON.stringify({ query: userInput })
+                body: new URLSearchParams({
+                    'query': userInput  // Send user input as 'query'
+                }),
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();  // Parse the response as JSON
+            })
             .then(data => {
-                // Append the bot's response to the chat
+                // Append the chatbot's response to the chat
                 appendMessage('Medical Bot', data.response);
+                document.getElementById('query').value = '';  // Clear the input field
             })
             .catch(error => {
                 console.error('Error:', error);
-                appendMessage('Error', 'Something went wrong. Please try again later.');
+                appendMessage('Error', 'An error occurred: ' + error.message);
             });
-
-            // Clear the input field
-            document.getElementById('query').value = '';
         });
 
         function appendMessage(sender, message) {
             const chatMessages = document.getElementById('chat-messages');
-            const messageElement = document.createElement('div');
-            messageElement.classList.add('chat-message');
-            messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
-            chatMessages.appendChild(messageElement);
-            chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll to the latest message
+            
+            // Only append messages from the bot
+            if (sender === 'Medical Bot') {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('chat-message');
+                messageDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
+                chatMessages.appendChild(messageDiv);
+        
+                // Scroll to the bottom to show the latest message
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
         }
+        
     </script>
 </body>
 

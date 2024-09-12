@@ -9,3 +9,9 @@
 2024-09-11 18:10:16,477 - Question count: 1
 2024-09-12 15:16:45,841 - Question count: 1
 2024-09-12 15:16:45,861 - Question asked by Unknown: what are the symptoms of malaria?
+2024-09-12 15:29:47,183 - Error processing the query by Unknown: "what are the symptoms of malaria?" - Error: exception: access violation writing 0x00000000000001C0
+2024-09-12 15:32:30,327 - Error processing the query by Unknown: "how to cure common cold" - Error: exception: access violation writing 0x0000000000004480
+2024-09-12 15:40:53,568 - Question count: 1
+2024-09-12 15:50:39,567 - Question count: 1
+2024-09-12 15:53:38,609 - Question count: 2
+2024-09-12 16:12:10,476 - Question count: 3
