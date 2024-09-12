@@ -79,7 +79,7 @@ header h3 {
 .chat-box-header {
     display: flex;
     align-items: center;
-    background-color: #3949ab;
+    background-color: #005bb5;
     padding: 15px;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
@@ -98,11 +98,50 @@ header h3 {
 }
 
 .chat-messages {
-    flex-grow: 1;
-    padding: 20px;
+    flex: 1;
+    padding: 15px; /* Reduced padding for more compact messages area */
     overflow-y: auto;
-    background-color: #f0f4ff;
-    border-bottom: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Reduced gap for better space utilization */
+}
+
+.message {
+    max-width: 85%; /* Wider messages for improved readability */
+    padding: 10px; /* Adjusted padding for balance */
+    border-radius: 8px; /* Rounded corners */
+    word-wrap: break-word;
+}
+
+.user-message {
+    align-self: flex-end;
+    background: #0061c2db; 
+    color: #fff;
+    border: 1px solid #0061c2db; 
+}
+
+.bot-message {
+    align-self: flex-start;
+    background: #e6f0ff; /* Light blue for bot messages */
+    color: #333;
+    border: 1px solid #cce0ff; /* Lighter blue border */
+}
+
+.chat-input {
+    display: flex;
+    border-top: 1px solid #d0dbe1;
+    padding: 12px; /* Adjusted padding for balance */
+    background: #f7faff; /* Light blue background */
+}
+
+input[type="text"] {
+    flex: 1;
+    padding: 10px; /* Adjusted padding for balance */
+    border: 1px solid #d0dbe1;
+    border-radius: 8px;
+    outline: none;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); /* Subtle inner shadow */
+    margin:2px;
 }
 
 .chat-message {
@@ -110,7 +149,7 @@ header h3 {
 }
 
 .chat-message strong {
-    color: #3949ab;
+    color: #005bb5;
 }
 
 .chat-input {
@@ -133,11 +172,11 @@ header h3 {
 }
 
 .chat-input input:focus {
-    border-color: #3949ab;
+    border-color: #005bb5;
 }
 
 .chat-input button {
-    background-color: #3949ab;
+    background-color: #005bb5;
     color: white;
     border: none;
     padding: 10px 15px;
