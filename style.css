@@ -7,7 +7,7 @@ body {
     flex-direction: column;
     height: 100vh;
     justify-content: space-between;
-    background-image: url('https://www.shutterstock.com/image-photo/girl-pointing-finger-on-screen-260nw-523773655.jpg');
+    background-image: url('images/girl\ hold\ phone\ image.jpg');
     background-size: cover;
     background-position: center;
     z-index: -1;
@@ -222,6 +222,23 @@ footer p {
         display: none;
     }
 
+    header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 20px;
+        background-color: #3566c040;
+        color: white;
+        box-shadow: 0 4px 8px #5c83c0;
+        flex-wrap: wrap;
+    }
+    footer {
+        text-align: center;
+        padding: 15px;
+        background-color: #235bb3;
+        color: white;
+        font-size: 12px;
+    }
     .chat-box {
         width: 100%;
         max-width: none;
