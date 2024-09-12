@@ -143,6 +143,7 @@ def login_user():
 def ask_question():
     global question_count
     user_input = request.form['query']
+
     username = request.form.get('username')  # Assuming you pass the username in the form data
     
     if not is_valid_query(user_input):
@@ -153,12 +154,25 @@ def ask_question():
     if qa_chain is None:
         if username:
             app.logger.info(f'Question asked by {username}: {user_input}')
+
+#     uname = request.form.get('uname')  # Using 'uname' instead of 'username'
+    
+#     if not is_valid_query(user_input):
+#         if uname:
+#             app.logger.info(f'Question asked by {uname}: {user_input}')
+#         return jsonify({"response": "Nothing matched. Please enter a valid query."})
+    
+#     if qa_chain is None:
+#         if uname:
+#             app.logger.info(f'Question asked by {uname}: {user_input}')
+# >>>>>>> 7e75131926b3cb049f308b103b5405d2f29eeb8b
         return jsonify({"response": "Failed to initialize QA bot."})
     
     try:
         res = qa_chain({'query': user_input})
         answer = res.get("result", "No answer found.")
         question_count += 1
+
         app.logger.info(f'Question count: {question_count}')
         if username:
             app.logger.info(f'Question asked by {username}: {user_input}')
@@ -166,7 +180,19 @@ def ask_question():
     except Exception as e:
         if username:
             app.logger.error(f'Error processing the query by {username}: "{user_input}" - Error: {e}')
+
+#         # Log question count along with uname
+#         if uname:
+#             app.logger.info(f'Question count by {uname}: {question_count} | Question asked by {uname}: {user_input}')
+#         else:
+#             app.logger.info(f'Question count by {uname}: {question_count}')
+#         return jsonify({"response": answer})
+#     except Exception as e:
+#         if uname:
+#             app.logger.error(f'Error processing the query by {uname}: "{user_input}" - Error: {e}')
+# >>>>>>> 7e75131926b3cb049f308b103b5405d2f29eeb8b
         return jsonify({"response": f"Error processing the query: {e}"})
+
 
 def is_valid_query(query):
     """Check if the query is valid."""
