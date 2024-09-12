@@ -7,8 +7,7 @@
     <link rel="icon" type="image/x-icon" href="images/fevicon.png">
     <title>Holoware Medical Bot</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css" >
-
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -31,6 +30,13 @@
             </div>
             <div id="chat-messages" class="chat-messages">
                 <!-- Chat messages will appear here -->
+                <!-- <div id="loading-container" class="loading-container">
+                    <div id="loading-indicator" class="loading-indicator">Medical Bot is typing<span id="dots">...</span></div>
+                </div> -->
+            </div>
+            <!-- Loading Indicator Container -->
+            <div id="loading-container" class="loading-container">
+                <div id="loading-indicator" class="loading-indicator">Medical Bot is typing<span id="dots">...</span></div>
             </div>
             <form id="query-form" class="chat-input">
                 <input type="text" name="query" id="query" placeholder="Type a message..." required>
@@ -53,6 +59,9 @@
             // Append the user's message to the chat
             appendMessage('You', userInput);
 
+            // Show loading indicator
+            document.getElementById('loading-container').style.display = 'block';
+
             // Send the user's input to the backend via a POST request
             fetch('http://127.0.0.1:5000/ask', {
                 method: 'POST',
@@ -73,10 +82,16 @@
                 // Append the chatbot's response to the chat
                 appendMessage('Medical Bot', data.response);
                 document.getElementById('query').value = '';  // Clear the input field
+
+                // Hide loading indicator
+                document.getElementById('loading-container').style.display = 'none';
             })
             .catch(error => {
                 console.error('Error:', error);
                 appendMessage('Error', 'An error occurred: ' + error.message);
+
+                // Hide loading indicator
+                document.getElementById('loading-container').style.display = 'none';
             });
         });
 
@@ -94,7 +109,6 @@
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }
         }
-        
     </script>
 </body>
 
