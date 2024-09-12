@@ -146,23 +146,52 @@ def ask_question():
     username = session.get('username', 'Unknown')  # Retrieve username from session, default to 'Unknown'
     
     if not is_valid_query(user_input):
-        app.logger.info(f'Question asked by {username}: {user_input}')
+        if username:
+            app.logger.info(f'Question asked by {username}: {user_input}')
         return jsonify({"response": "Nothing matched. Please enter a valid query."})
     
     if qa_chain is None:
-        app.logger.info(f'Question asked by {username}: {user_input}')
+        if username:
+            app.logger.info(f'Question asked by {username}: {user_input}')
+
+#     uname = request.form.get('uname')  # Using 'uname' instead of 'username'
+    
+#     if not is_valid_query(user_input):
+#         if uname:
+#             app.logger.info(f'Question asked by {uname}: {user_input}')
+#         return jsonify({"response": "Nothing matched. Please enter a valid query."})
+    
+#     if qa_chain is None:
+#         if uname:
+#             app.logger.info(f'Question asked by {uname}: {user_input}')
+# >>>>>>> 7e75131926b3cb049f308b103b5405d2f29eeb8b
         return jsonify({"response": "Failed to initialize QA bot."})
     
     try:
         res = qa_chain({'query': user_input})
         answer = res.get("result", "No answer found.")
         question_count += 1
+
         app.logger.info(f'Question count: {question_count}')
-        app.logger.info(f'Question asked by {username}: {user_input}')
-        return jsonify({"response": answer, "username": username})
+        if username:
+            app.logger.info(f'Question asked by {username}: {user_input}')
+        return jsonify({"response": answer})
     except Exception as e:
-        app.logger.error(f'Error processing the query by {username}: "{user_input}" - Error: {e}')
-        return jsonify({"response": f"Error processing the query: {e}", "username": username})
+        if username:
+            app.logger.error(f'Error processing the query by {username}: "{user_input}" - Error: {e}')
+
+#         # Log question count along with uname
+#         if uname:
+#             app.logger.info(f'Question count by {uname}: {question_count} | Question asked by {uname}: {user_input}')
+#         else:
+#             app.logger.info(f'Question count by {uname}: {question_count}')
+#         return jsonify({"response": answer})
+#     except Exception as e:
+#         if uname:
+#             app.logger.error(f'Error processing the query by {uname}: "{user_input}" - Error: {e}')
+# >>>>>>> 7e75131926b3cb049f308b103b5405d2f29eeb8b
+        return jsonify({"response": f"Error processing the query: {e}"})
+
 
 def is_valid_query(query):
     """Check if the query is valid."""
