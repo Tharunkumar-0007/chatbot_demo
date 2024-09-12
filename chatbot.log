@@ -61,3 +61,26 @@
 2024-09-11 11:55:31,357 - Question count: 1
 2024-09-11 11:57:35,620 - Question count : 1
 2024-09-11 12:00:17,308 - Question count : 2
+2024-09-11 12:05:41,773 - Question count by None: 1
+2024-09-11 12:11:38,341 - User registered successfully: sam
+2024-09-11 12:13:11,615 - User registration attempt failed: sam - All fields are required.
+2024-09-11 12:14:26,745 - User registered successfully: ramm
+2024-09-11 12:46:35,427 - Login attempt failed: sam - Invalid username or password.
+2024-09-11 13:04:54,537 - User registered successfully: tharun
+2024-09-11 13:05:41,443 - User registration attempt failed: ham - All fields are required.
+2024-09-11 13:05:50,134 - User registered successfully: ham
+2024-09-11 13:13:51,295 - Login attempt failed: tharun - Invalid username or password.
+2024-09-12 12:48:10,328 - Question count: 1
+2024-09-12 12:48:10,351 - Question asked by Unknown: what are the symptoms of covid-19
+2024-09-12 12:49:53,352 - Question count: 2
+2024-09-12 12:49:53,353 - Question asked by Unknown: what is the most common blood group
+2024-09-12 12:52:03,883 - Question count: 3
+2024-09-12 12:52:03,884 - Question asked by Unknown: what are the symptoms of covid-19
+2024-09-12 13:00:49,134 - Question count: 4
+2024-09-12 13:00:49,140 - Question asked by Unknown: How to cure common cold
+2024-09-12 13:07:29,393 - Question count: 5
+2024-09-12 13:07:29,394 - Question asked by Unknown: how to cure malaria?
+2024-09-12 13:12:58,737 - Question count: 6
+2024-09-12 13:12:58,738 - Question asked by Unknown: what are the symptoms of malaria 
+2024-09-12 13:22:58,402 - Question count: 7
+2024-09-12 13:22:58,423 - Question asked by Unknown: how to cure common cold

@@ -90,32 +90,28 @@
     <div id="response-message"></div>
 </div>
 <script>
-    $(document).ready(function() {
-        $('#register-form').on('submit', function(e) {
-            e.preventDefault();
-            $.ajax({
-                url: 'http://localhost:5000/register',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    uname: $('#uname').val(),
-                    email: $('#email').val(),
-                    password: $('#password').val(),
-                    retype_password: $('#retype_password').val()
-                }),
-                success: function(response) {
-                    $('#response-message').html('<div class="alert alert-success">' + response.message + '</div>');
-                    setTimeout(function() {
-                        window.location.href = 'login.html';  // Redirect to login page after success
-                    }, 2000);  // Optional delay before redirecting
-                },
-                error: function(response) {
-                    $('#response-message').html('<div class="alert alert-danger">' + response.responseJSON.error + '</div>');
-                }
-            });
+$(document).ready(function() {
+    $('#register-form').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: 'http://localhost:5000/register',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                uname: $('#uname').val(),
+                email: $('#email').val(),
+                password: $('#password').val(),
+                retype_password: $('#retype_password').val()
+            }),
+            success: function(response) {
+                $('#response-message').html('<div class="alert alert-success">' + response.message + '</div>');
+            },
+            error: function(response) {
+                $('#response-message').html('<div class="alert alert-danger">' + response.responseJSON.error + '</div>');
+            }
         });
     });
-    </script>
-    
+});
+</script>
 </body>
 </html>

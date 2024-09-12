@@ -1,20 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="https://holoware.co/wp-content/uploads/2024/06/Fav-icon-260-x-260.png">
     <title>Holoware Medical Bot</title>
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" >
+
 </head>
+
 <body>
     <header class="header">
         <img src="https://holoware.co/wp-content/uploads/2024/04/Blue-Logo-new.png" alt="Holoware Logo" height="80px">
         <h1>Holoware Medical Bot</h1>
-        <h3>The chatbot assists us in answering your questions.</h3>
     </header>
 
     <div class="chat-container">
+        <!-- Background Image -->
+        <div class="background-image">
+            <img src="c:\Users\VIJAY HOLOWARE\Pictures\robot-removebg-preview.png" alt="Robot Image">
+        </div>
+
         <div class="chat-box">
             <div class="chat-box-header">
                 <img src="https://pbs.twimg.com/profile_images/1673602002360623105/4mecl_lj_400x400.png" alt="Medical Chat Avatar" class="user-avatar">
@@ -26,21 +34,19 @@
             <form id="query-form" class="chat-input">
                 <input type="text" name="query" id="query" placeholder="Type a message..." required>
                 <button type="button" id="voice-input">🎤</button>
-                <button type="submit" id="submitbtn">Send</button>            
+                <button type="submit" id="submitbtn">Send</button>
             </form>
         </div>
     </div>
 
     <footer class="footer">
         <p>&copy; Powered by Holoware</p>
-        <p>*You can also refer to Doctor because this response is inaccurate.</p>
+        <p>*Due to the inaccuracy of this response, you can also consult the doctor.</p>
     </footer>
 
-    <!-- Include the script -->
-    <script src="script.js"></script>
     <script>
         document.getElementById('query-form').addEventListener('submit', (event) => {
-            event.preventDefault();  // Prevent form from reloading the page
+            event.preventDefault(); // Prevent form from reloading the page
             const userInput = document.getElementById('query').value;
 
             // Append the user's message to the chat
@@ -50,41 +56,33 @@
             fetch('http://127.0.0.1:5000/ask', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',  // Adjust content type for JSON data
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    'query': userInput  // Send user input as 'query'
-                }),
+                body: JSON.stringify({ query: userInput })
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();  // Parse the response as JSON
-            })
+            .then(response => response.json())
             .then(data => {
-                // Append the chatbot's response to the chat
-                appendMessage(data.username, data.response);
-                document.getElementById('query').value = '';  // Clear the input field
+                // Append the bot's response to the chat
+                appendMessage('Medical Bot', data.response);
             })
             .catch(error => {
                 console.error('Error:', error);
-                appendMessage('Error', 'An error occurred: ' + error.message);
+                appendMessage('Error', 'Something went wrong. Please try again later.');
             });
+
+            // Clear the input field
+            document.getElementById('query').value = '';
         });
 
         function appendMessage(sender, message) {
             const chatMessages = document.getElementById('chat-messages');
-            
-            // Append messages to the chat
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('chat-message');
-            messageDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
-            chatMessages.appendChild(messageDiv);
-    
-            // Scroll to the bottom to show the latest message
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('chat-message');
+            messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll to the latest message
         }
     </script>
 </body>
+
 </html>
