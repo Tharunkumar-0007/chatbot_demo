@@ -32,3 +32,10 @@
 2024-09-12 17:54:05,306 - Question count: 8
 2024-09-12 17:56:43,542 - Question count: 9
 2024-09-12 18:00:46,584 - Question count: 10
+2024-10-03 17:07:31,615 - Error loading FAISS database: Could not import faiss python package. Please install it with `pip install faiss-gpu` (for CUDA supported GPU) or `pip install faiss-cpu` (depending on Python version).
+2024-10-03 17:07:44,997 - Error loading FAISS database: Could not import faiss python package. Please install it with `pip install faiss-gpu` (for CUDA supported GPU) or `pip install faiss-cpu` (depending on Python version).
+2024-10-03 17:09:31,368 - Error loading FAISS database: Could not import faiss python package. Please install it with `pip install faiss-gpu` (for CUDA supported GPU) or `pip install faiss-cpu` (depending on Python version).
+2024-10-03 17:09:39,900 - Error loading FAISS database: Could not import faiss python package. Please install it with `pip install faiss-gpu` (for CUDA supported GPU) or `pip install faiss-cpu` (depending on Python version).
+2024-10-03 17:40:49,863 - Question count: 1
+2024-10-03 18:08:55,425 - Question count: 2
+2024-10-03 18:13:48,193 - Question count: 3
